@@ -84,10 +84,6 @@ echo'
       </li>
     </ul>
   </div>
-
-';
-
-?>
   
 
   <!-- Bootstrap core JavaScript -->
