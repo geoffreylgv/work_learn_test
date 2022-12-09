@@ -57,9 +57,7 @@ $coding_is_beati;
       </div>
     </div>
   </div>
-<?php
 
-echo'
 <div class="social-icons">
     <ul class="list-unstyled text-center mb-0">
       <li class="list-unstyled-item" data-toggle="tooltip" data-placement="top" title="Profil Complet Linkedin">
@@ -84,7 +82,6 @@ echo'
       </li>
     </ul>
   </div>
-  
 
   <!-- Bootstrap core JavaScript -->
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
