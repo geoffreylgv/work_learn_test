@@ -1,8 +1,3 @@
-<?php
-
-$coding_is_beati;
-
-?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
