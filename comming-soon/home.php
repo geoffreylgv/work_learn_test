@@ -84,14 +84,6 @@
   <!-- Custom scripts for this template -->
   <script src="js/coming-soon.min.js"></script>
 	<!-- -->
-
-        <div id="sfc2d1zz5kp9apgb2w7g5afpk66c1pmzjnr" class="toHide"></div>
-		    
-            <script type="text/javascript" src="https://counter3.stat.ovh/private/counter.js?c=2d1zz5kp9apgb2w7g5afpk66c1pmzjnr&down=async" async></script>
-            <script>
-                <a href="https://www.compteurdevisite.com" title="compteur pour site internet"><img src="https://counter3.stat.ovh/private/compteurdevisite.php?c=2d1zz5kp9apgb2w7g5afpk66c1pmzjnr" border="0" title="compteur pour site internet" alt="compteur pour site internet"></a>
-            </script>
- 
 	
 	<script>
 		window.onload = function() { document.body.className = ''; }
