@@ -1,25 +1,29 @@
-name: Markdownlint
+name: Markdown Linter
 
 on:
   push:
-    paths:
-      - "**/*.md"
+    branches:
+      - main
   pull_request:
-    paths:
-      - "**/*.md"
+    branches:
+      - main
 
 jobs:
   lint:
-
+    name: Validate Markdown
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: 12.x
-    - name: Run Markdownlint
-      run: |
-        npm i -g markdownlint-cli
-        markdownlint "**/*.md" --ignore node_modules
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install Dependencies
+        run: npm install -g markdownlint-cli
+
+      - name: Run Markdown Linter
+        run: markdownlint '**/*.md'
