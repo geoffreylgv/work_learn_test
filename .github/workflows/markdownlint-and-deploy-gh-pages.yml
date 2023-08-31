@@ -1,0 +1,40 @@
+name: Super Linter and Deploy
+
+on:
+  push:
+    branches-ignore: [learn]
+  pull_request:
+    branches: [learn]
+
+jobs:
+  run-lint-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Super Linter
+        id: super-linter
+        uses: github/super-linter@v4
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          DEFAULT_BRANCH: "learn"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy to GitHub Pages
+        if: steps.super-linter.outcome == 'success'
+        run: |
+          # Assuming you need to build your project before deploying
+          npm install  # Install dependencies
+          npm run build  # Build your project
+
+          # Configure Git with actor's username and a no-reply email
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "${GITHUB_ACTOR}"
+
+          # Deploy to GitHub Pages
+          git checkout gh-pages
+          git add .
+          git commit -m "Deployed from main branch"
+          git push origin gh-pages
