@@ -1,26 +1,21 @@
-name: Markdown Linter
+name: Super Linter
 
 on:
   push:
-    branches:
-      - main
+    branches-ignore: [learn]
   pull_request:
-    branches:
-      - main
+    branches: [learn]
 
 jobs:
-  lint:
-    name: Validate Markdown
+  run-lint:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14
-          run: |
-            npm i -g markdownlint-cli
-            markdownlint "**/*.md" --ignore node_modules
+      - name: Super Linter
+        uses: github/super-linter@v4
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          DEFAULT_BRANCH: "learn"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
