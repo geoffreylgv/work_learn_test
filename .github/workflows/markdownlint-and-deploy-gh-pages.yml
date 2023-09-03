@@ -1,4 +1,4 @@
-name: Super Linter
+name: Super Linter and Deploy
 
 on:
   push:
@@ -7,15 +7,24 @@ on:
     branches: [learn]
 
 jobs:
-  run-lint:
+  run-lint-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Super Linter
+        id: super-linter
         uses: github/super-linter@v4
         env:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: "learn"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy to GH Pages
+        if: success() # This ensures that deployment happens only if linting is successful
+        run: |
+          npm run build
+          npm install -g gh-pages
+          npx gh-pages -d build
