@@ -7,7 +7,7 @@ on:
     branches: [learn]
 
 jobs:
-  run-lint-and-deploy:
+  run-super-linter:
     runs-on: ubuntu-latest
 
     steps:
