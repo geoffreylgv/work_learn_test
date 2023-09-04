@@ -21,10 +21,3 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: "learn"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Deploy to GH Pages
-        if: success() # This ensures that deployment happens only if linting is successful
-        run: |
-          npm run build
-          npm install -g gh-pages
-          npx gh-pages -d build
