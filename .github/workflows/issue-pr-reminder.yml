@@ -2,7 +2,7 @@ name: Issue/PR Reminder
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  # Schedule the workflow to run every 6 hours
+    - cron: '*/6 * * * *'  # Schedule the workflow to run every 6 hours
 
 jobs:
   reminder:
@@ -23,4 +23,4 @@ jobs:
       - name: Run reminder script
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: node /js/reminder.js
+        run: node js/reminder.js
