@@ -1,4 +1,4 @@
-name: Super Linter and Deploy
+name: Super Linter
 
 on:
   push:
