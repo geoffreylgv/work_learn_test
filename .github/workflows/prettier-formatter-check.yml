@@ -15,7 +15,7 @@ jobs:
       - name: Install dependencies
         run: |
           yarn install
-          yarn add prettier eslint super-linter
+          yarn add --force prettier eslint super-linter
 
       - name: Run Prettier
         run: prettier --check .
