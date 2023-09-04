@@ -1,0 +1,54 @@
+name: Reviewer Reminder
+
+on:
+  schedule:
+    - cron: "5 * * * *"
+
+jobs:
+  send-reminder:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install dependencies
+        run: npm install @actions/github
+
+      - name: Check PR activity
+        id: check_activity
+        run: |
+          const { context, GitHub } = require('@actions/github');
+          
+          const githubToken = process.env.GITHUB_TOKEN;
+          const octokit = new GitHub(githubToken);
+
+          const prNumber = context.payload.repository.pull_requests[0].number;
+
+          const { data: reviews } = await octokit.pulls.listReviews({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: prNumber,
+          });
+
+          const lastReview = reviews[reviews.length - 1];
+
+          const lastReviewDate = new Date(lastReview.submitted_at);
+          const currentTime = new Date();
+
+          const hoursSinceLastReview = (currentTime - lastReviewDate) / (1000 * 60 * 60);
+
+          console.log(`Hours since last review: ${hoursSinceLastReview}`);
+
+          if (hoursSinceLastReview >= 5) {
+            console.log('No activity detected for 5 hours. Sending reminder...');
+            // Implement your reminder logic here, e.g., sending a comment.
+          }
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
