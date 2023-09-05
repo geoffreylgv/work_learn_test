@@ -13,6 +13,19 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
+      - name: Add GitHub Actions Bot as Reviewer
+        run: |
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          TOKEN="${{ secrets.GITHUB_TOKEN }}"
+          
+          # Add the GitHub Actions bot as a reviewer
+          curl -X POST \
+            -H "Authorization: token $TOKEN" \
+            -d "{\"reviewers\": [\"github-actions[bot]\"]}" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/requested_reviewers"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Sleep for 5 minutes
         run: sleep 120
 
