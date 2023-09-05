@@ -13,16 +13,36 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
-      - name: Add GitHub Actions Bot as Reviewer
+      - name: Get Collaborators
+        run: |
+          # Get the list of collaborators from your repository
+          COLLABORATORS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/collaborators" \
+            | jq -r '.[].login')
+
+          # Get the PR owner's username
+          PR_OWNER=$(jq -r '.pull_request.user.login' $GITHUB_EVENT_PATH)
+
+          # Remove the PR owner from the list of collaborators
+          COLLABORATORS=$(echo "$COLLABORATORS" | grep -v "$PR_OWNER")
+
+          echo "Collaborators: $COLLABORATORS"
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Add Collaborators as Reviewers
         run: |
           PR_NUMBER="${{ github.event.pull_request.number }}"
           TOKEN="${{ secrets.GITHUB_TOKEN }}"
           
-          # Add the GitHub Actions bot as a reviewer
-          curl -X POST \
-            -H "Authorization: token $TOKEN" \
-            -d "{\"reviewers\": [\"github-actions[bot]\"]}" \
-            "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/requested_reviewers"
+          # Add each collaborator as a reviewer
+          for COLLABORATOR in $COLLABORATORS; do
+            curl -X POST \
+              -H "Authorization: token $TOKEN" \
+              -d "{\"reviewers\": [\"$COLLABORATOR\"]}" \
+              "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/requested_reviewers"
+          done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
