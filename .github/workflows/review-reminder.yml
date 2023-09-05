@@ -1,4 +1,5 @@
 name: Reminder to Review
+
 on:
   pull_request:
     types:
@@ -49,12 +50,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Sleep for 5 minutes
-        run: sleep 120
+      - name: Sleep for 5 hours
+        run: sleep 120 # 5 hours = 18000 seconds
 
       - name: Create or Update Comment
         uses: peter-evans/create-or-update-comment@v1
         with:
           issue-number: ${{ github.event.pull_request.number }}
-          body: "Hey @geoffreylgv, a friendly reminder to review this PR! 👀"
+          body: "Friendly reminder to review this PR! 👀"
           token: ${{ secrets.GITHUB_TOKEN }}
