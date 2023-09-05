@@ -14,51 +14,12 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
-      - name: Get PR Owner
-        id: pr_owner
-        run: echo "::set-output name=pr_owner::${{ github.event.pull_request.user.login }}"
+      - name: Sleep for 5 minutes
+        run: sleep 120
 
-      - name: Get Collaborators
-        id: collaborators
-        run: |
-          # Get the list of collaborators from your repository
-          COLLABORATORS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/collaborators" \
-            | jq -r '.[].login')
-          echo "::set-output name=collaborators::${COLLABORATORS}"
-        shell: bash
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Add Collaborators as Reviewers
-        run: |
-          PR_NUMBER="${{ github.event.pull_request.number }}"
-          TOKEN="${{ secrets.GITHUB_TOKEN }}"
-          COLLABORATORS="${{ steps.collaborators.outputs.collaborators }}"
-          
-          # Add each collaborator as a reviewer
-          for COLLABORATOR in $COLLABORATORS; do
-            curl -X POST \
-              -H "Authorization: token $TOKEN" \
-              -d "{\"reviewers\": [\"$COLLABORATOR\"]}" \
-              "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/requested_reviewers"
-          done
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Sleep for 5 hours
-        run: sleep 120 # 5 hours = 18000 seconds
-
-      - name: Notify PR Owner
-        if: steps.pr_owner.outputs.pr_owner != 'null'
-        run: |
-          PR_OWNER="${{ steps.pr_owner.outputs.pr_owner }}"
-          TOKEN="${{ secrets.GITHUB_TOKEN }}"
-          
-          # Notify the PR owner separately
-          curl -X POST \
-            -H "Authorization: token $TOKEN" \
-            -d "{\"body\": \"Friendly reminder to review your PR, @${PR_OWNER}! 👀\"}" \
-            "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create or Update Comment
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: "Hey @geoffreylgv, a friendly reminder to review this PR #${{ github.event.pull_request.number }}! 👀"
+          token: ${{ secrets.GITHUB_TOKEN }}
